@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://bf8a3w0w8wg5x"]
+
+[ext_resource type="Texture2D" uid="uid://druseog6663i7" path="res://Assets/Character/empty_hand.png" id="1_rioo7"]
+[ext_resource type="Script" path="res://Src/Entities/Player/Arms/EmptyArm.gd" id="1_rpmwy"]
+
+[node name="EmptyArm" type="Node2D"]
+script = ExtResource("1_rpmwy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
+texture = ExtResource("1_rioo7")

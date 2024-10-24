@@ -1,0 +1,170 @@
+[gd_scene load_steps=6 format=3 uid="uid://ddd2uo078oi06"]
+
+[ext_resource type="Script" path="res://Src/Controller/GUIInventory.gd" id="1_xp01s"]
+[ext_resource type="Texture2D" uid="uid://csu5vrj3cg202" path="res://Assets/UI/hud_ninerect.png" id="1_xqunh"]
+[ext_resource type="Theme" uid="uid://vrgt2upgarb7" path="res://Scenes/GUI/Theme.tres" id="3_2i3xp"]
+[ext_resource type="Script" path="res://Src/GUI/Components/SlotBase.gd" id="3_pgcgo"]
+[ext_resource type="Texture2D" uid="uid://ctvrhbq1rly6r" path="res://Assets/UI/inventory_slot.png" id="4_nojb2"]
+
+[node name="UiLayoutInventory" type="Control"]
+custom_minimum_size = Vector2(500, 540)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_xp01s")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -26.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_xqunh")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="ItemList" type="ItemList" parent="."]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 15.0
+offset_right = 455.0
+offset_bottom = 354.0
+theme = ExtResource("3_2i3xp")
+max_columns = 6
+fixed_column_width = 64
+fixed_icon_size = Vector2i(64, 64)
+
+[node name="slot_left_hand" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 15.0
+offset_top = 463.0
+offset_right = 79.0
+offset_bottom = 527.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_right_hand" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 87.0
+offset_top = 463.0
+offset_right = 151.0
+offset_bottom = 527.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_consumable_1" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 175.0
+offset_top = 463.0
+offset_right = 239.0
+offset_bottom = 527.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_consumable_2" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 247.0
+offset_top = 463.0
+offset_right = 311.0
+offset_bottom = 527.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_consumable_3" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 319.0
+offset_top = 463.0
+offset_right = 383.0
+offset_bottom = 527.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_consumable_4" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 391.0
+offset_top = 463.0
+offset_right = 455.0
+offset_bottom = 527.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="SlotBase7" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 15.0
+offset_top = 375.0
+offset_right = 79.0
+offset_bottom = 439.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="SlotBase8" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 87.0
+offset_top = 375.0
+offset_right = 151.0
+offset_bottom = 439.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_card_1" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 175.0
+offset_top = 375.0
+offset_right = 239.0
+offset_bottom = 439.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_card_2" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 247.0
+offset_top = 375.0
+offset_right = 311.0
+offset_bottom = 439.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_card_3" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 319.0
+offset_top = 375.0
+offset_right = 383.0
+offset_bottom = 439.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")
+
+[node name="slot_card_4" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 391.0
+offset_top = 375.0
+offset_right = 455.0
+offset_bottom = 439.0
+script = ExtResource("3_pgcgo")
+status = null
+background_texture = ExtResource("4_nojb2")

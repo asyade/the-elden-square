@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://db5uegrvngig0"]
+
+[ext_resource type="Script" path="res://Src/Entities/Player/Arms/ArmWithMelee/ArmWithMelee.gd" id="1_cxqfq"]
+[ext_resource type="SpriteFrames" uid="uid://ctlpuecg2jrpq" path="res://Src/Entities/Player/Arms/ArmWithMeleeDefaultFx.tres" id="2_idg01"]
+
+[node name="ArmWithMelee" type="Node2D"]
+script = ExtResource("1_cxqfq")
+
+[node name="Fx" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("2_idg01")
+animation = &"SHORT_ATTACK_DOWN"
+frame_progress = 0.565237
+speed_scale = 2.0
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 512
+collision_mask = 512
+
+[node name="polygon" type="CollisionPolygon2D" parent="HitBox"]
+top_level = true
+position = Vector2(5, 0)
+polygon = PackedVector2Array(-18, 36, 33, 39, 47, 6, 23, -1, -5, 0)

@@ -1,0 +1,60 @@
+[gd_scene load_steps=6 format=3 uid="uid://c0fom0gyn8yeb"]
+
+[ext_resource type="Script" path="res://Src/Controller/GUIInGame.gd" id="1_liix4"]
+[ext_resource type="Script" path="res://Src/GUI/Components/SlotBase.gd" id="1_ol8tl"]
+[ext_resource type="Texture2D" uid="uid://ctvrhbq1rly6r" path="res://Assets/UI/inventory_slot.png" id="2_1oytn"]
+[ext_resource type="Theme" uid="uid://vrgt2upgarb7" path="res://Scenes/GUI/Theme.tres" id="4_oqygx"]
+[ext_resource type="Texture2D" uid="uid://b0x08rgmq8x78" path="res://Assets/UI/health_bar_empty.png" id="5_mw7al"]
+
+[node name="UiLayoutMain" type="CanvasLayer"]
+script = ExtResource("1_liix4")
+
+[node name="SlotBase" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 21.0
+offset_top = 563.0
+offset_right = 85.0
+offset_bottom = 627.0
+script = ExtResource("1_ol8tl")
+background_texture = ExtResource("2_1oytn")
+
+[node name="SlotBase2" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 98.0
+offset_top = 563.0
+offset_right = 162.0
+offset_bottom = 627.0
+script = ExtResource("1_ol8tl")
+background_texture = ExtResource("2_1oytn")
+
+[node name="SlotBase3" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 173.0
+offset_top = 563.0
+offset_right = 237.0
+offset_bottom = 627.0
+script = ExtResource("1_ol8tl")
+background_texture = ExtResource("2_1oytn")
+
+[node name="progress_health" type="ProgressBar" parent="."]
+offset_left = 23.0
+offset_top = 24.0
+offset_right = 240.0
+offset_bottom = 56.0
+theme = ExtResource("4_oqygx")
+value = 100.0
+show_percentage = false
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+offset_left = 20.0
+offset_top = 21.0
+offset_right = 244.0
+offset_bottom = 59.0
+texture = ExtResource("5_mw7al")
+patch_margin_left = 6
+patch_margin_top = 6
+patch_margin_right = 6
+patch_margin_bottom = 6

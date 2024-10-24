@@ -1,0 +1,4 @@
+-The light coming from the magic flame that you see in the mockups use the "Overlay" color blend mode.
+
+-Cell gate
+If you want the gears animation to be loopable for some reason, you can use the version with no door and keep just the first 4 frames of the animation.

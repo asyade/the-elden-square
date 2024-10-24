@@ -1,0 +1,11 @@
+Rules\wall-1-rule0-erases all generated tiles and resets them to their initial state.tmx
+Rules\wall-1-rule1-places all tiles.tmx
+Rules\wall-1-rule2-applies variations.tmx
+
+Rules\wall-2-rule0-erases all generated tiles and resets them to their initial state.tmx
+Rules\wall-2-rule1-places all tiles.tmx
+Rules\wall-2-rule2-applies variations.tmx
+
+Rules\Prison Cells-rule0-erases all generated tiles and resets them to their initial state.tmx
+Rules\Prison Cells-rule1-places all tiles.tmx
+Rules\Prison Cells-rule2-applies variations.tmx

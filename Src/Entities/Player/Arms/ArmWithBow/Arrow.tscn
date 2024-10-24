@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://bb4ai2mcxr8e8"]
+
+[ext_resource type="Script" path="res://Src/Entities/Player/Arms/ArmWithBow/Arrow.gd" id="1_jm4wb"]
+[ext_resource type="Texture2D" uid="uid://2qqbhiqfccug" path="res://Assets/Factions/Knights/Troops/Archer/Arrow/Arrow.png" id="2_xnflt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4r2m2"]
+atlas = ExtResource("2_xnflt")
+region = Rect2(0, 3, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_un7ot"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4r2m2")
+}],
+"loop": true,
+"name": &"new_animation",
+"speed": 5.0
+}]
+
+[node name="Arrow" type="Node"]
+script = ExtResource("1_jm4wb")
+
+[node name="Node2D" type="RigidBody2D" parent="."]
+collision_layer = 4
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="Node2D"]
+position = Vector2(13, 0)
+polygon = PackedVector2Array(0, -6, 11, 0, 0, 6, 0, -1.82964)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Node2D"]
+scale = Vector2(0.7, 0.7)
+sprite_frames = SubResource("SpriteFrames_un7ot")
+animation = &"new_animation"
+frame_progress = 0.359858
+
+[node name="Area2D" type="Area2D" parent="Node2D"]
+collision_layer = 512
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="Node2D/Area2D"]
+position = Vector2(11.3125, 0)
+scale = Vector2(1.30682, 1.45833)
+polygon = PackedVector2Array(2.05652, -2.74286, 8.17826, 0, 2.05652, 2.74286, -23.9609, 0.685714, -23.9609, -0.685714)

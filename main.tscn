@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://cm8ikyss7gldy"]
+
+[ext_resource type="PackedScene" uid="uid://c0fom0gyn8yeb" path="res://Scenes/GUI/UILayoutMain.tscn" id="1_20oo1"]
+[ext_resource type="PackedScene" uid="uid://x36mnmvi8y68" path="res://world_0.tscn" id="1_kxr2g"]
+[ext_resource type="PackedScene" uid="uid://3j5ljycxojo0" path="res://Scenes/Level/world_2.tscn" id="2_btjpk"]
+[ext_resource type="PackedScene" uid="uid://gl2435bsxlei" path="res://Src/Entities/Mob/Skeleton/Skeleton.tscn" id="5_bd6g5"]
+[ext_resource type="Script" path="res://Src/Gameplay/Spawn.gd" id="5_c6cie"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Node" parent="." instance=ExtResource("1_kxr2g")]
+position = Vector2(-50352, -13602)
+
+[node name="UiLayoutMain" parent="." instance=ExtResource("1_20oo1")]
+
+[node name="Node2D" parent="." instance=ExtResource("2_btjpk")]
+position = Vector2(-387, -164)
+
+[node name="Skeleton7" parent="." groups=["entity_mob_1"] instance=ExtResource("5_bd6g5")]
+position = Vector2(291, 383)
+
+[node name="Skeleton8" parent="." groups=["entity_mob_1"] instance=ExtResource("5_bd6g5")]
+position = Vector2(312, 470)
+
+[node name="Skeleton9" parent="." groups=["entity_mob_1"] instance=ExtResource("5_bd6g5")]
+position = Vector2(154, 405)
+
+[node name="Skeleton10" parent="." groups=["entity_mob_1"] instance=ExtResource("5_bd6g5")]
+position = Vector2(455, 462)
+
+[node name="Spawn" type="Node2D" parent="."]
+position = Vector2(17, 66)
+script = ExtResource("5_c6cie")
+
+[node name="Timer" type="Timer" parent="Spawn"]
+autostart = true

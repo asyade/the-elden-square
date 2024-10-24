@@ -1,0 +1,76 @@
+[gd_scene load_steps=12 format=3 uid="uid://cksd1u3ndcgmt"]
+
+[ext_resource type="Script" path="res://Src/Entities/Player/Arms/ArmWithBow/ArmWithBow.gd" id="1_y1me7"]
+[ext_resource type="Texture2D" uid="uid://bjpyg2alridlj" path="res://Assets/Factions/Knights/Troops/Archer/Archer + Bow/Archer_Bow_Blue.png" id="2_vgsqy"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ecuqo"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(0, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1o1p6"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(192, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ysxxa"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(384, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0k0uk"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(576, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ep73c"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(768, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_amf3j"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(960, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_54fo0"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(1152, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q2xfq"]
+atlas = ExtResource("2_vgsqy")
+region = Rect2(1344, 192, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8122c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ecuqo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1o1p6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ysxxa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0k0uk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ep73c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_amf3j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_54fo0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q2xfq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="RightArmWithBow" type="Node2D"]
+script = ExtResource("1_y1me7")
+side = 1
+
+[node name="bow_sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.7, 0.7)
+sprite_frames = SubResource("SpriteFrames_8122c")

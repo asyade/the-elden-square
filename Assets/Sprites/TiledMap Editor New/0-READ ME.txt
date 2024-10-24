@@ -1,0 +1,8 @@
+-The prison cells use the edge set autotile instead of the corner set, which is the most common to use (e.g most terrains and walls use the corner pattern for autotiles)
+	This means you have to be a bit more meticulous while drawing with this brush tool because you can't click and drag thru diagonals, only horizontally or vertically. 
+	So I'd recommend seeing the preview while hovering the mouse before clicking.
+
+	Quick tips:
+	 - press CTRL or CMD to force 4 directional corner to pop up
+	 - while moving your mouse cursor, the results in preview will change (e.g move your cursor to the direction you want to go while keeping close to the joint and the right tile will pop up)
+	 - the tiles with 2 directions in both axis aren't supported while drawing with the brush, but this is fixed after automapping (CTRL + M)
