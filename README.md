@@ -1,25 +1,34 @@
-# The Elden Sqaure
+# The Elden Square
 
-A procedurally generated top-down souls-like game built with Godot 4.
+A souls-like action RPG featuring procedural generation built with Godot 4.
 
-![Screenshot](docs/main_game.png)
+![Game Screenshot](docs/main_game.png)
 
-## Features
+## Overview
+
+The Elden Square combines souls-like combat mechanics with procedurally generated dungeons, offering a unique experience with each playthrough. The game is built using the Godot 4 engine with GDScript.
+
+## Core Features
 
 ### Procedural World Generation
-Multiple layer tree based world generation with path and alternate paths.
+- Multi-layered procedural dungeon generation
+- Tree-based room layout system
+- Interconnected paths with alternate routes
 
 ### Combat System
-- Souls-like combat mechanics
-- Multiple weapon types:
-  - Melee weapons
-  - Bow and ranged weapons
-- Target locking system
-- Dodge and roll mechanics
+- Precise, timing-based combat mechanics
+- Diverse weapon selection:
+  - Close-range melee weapons
+  - Long-range bow combat
+  - Unique weapon movesets
+- Advanced targeting system
+- Tactical dodge and roll maneuvers
 
 ### Character Systems
-- Player character with customizable loadout
-- Enemy AI with different behavior patterns
-- Skeleton enemies with unique attack patterns
-- Inventory system with equipment slots
-
+- Customizable player loadouts
+- Equipment-based stat system
+- Multiple enemy types:
+  - Melee skeletons
+  - Ranged mage skeletons
+  - Assassin-type enemies
+- Comprehensive inventory management
