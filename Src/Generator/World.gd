@@ -24,11 +24,13 @@ var all_used_sections: Dictionary = {}
 
 # All the sections's coridors (flatten)
 # Note > This value is set late in the initialization
-var all_coridors: Array = []
+var all_coridors: Array[Coridor] = []
 
 # All the world entities
 # Note > This value is set late in the initialization
 var entities: Array[WorldEntity] = []
+
+var host: Node2D
 
 var layers: Array[Grid]															= []
 
@@ -36,10 +38,29 @@ signal before_rendering_layer(renderer: WorldRenderer, layer: WorldRenderer.Laye
 signal after_rendering_layer(renderer: WorldRenderer, layer: WorldRenderer.Layer, phase: int)
 signal projecting_entities_layer(layer: WorldProjection.EntitiesProjectionLayer)
 
+signal game_state_changed(state: GameState)
+
+enum GameState {
+	GENERATION,
+	AFTER_GENERATION_EDITOR,
+	AFTER_GENERATION,
+}
+
 func _init(init_params: Params) -> void:
 	self.params = init_params
 	self.rng = RandomNumberGenerator.new()
 	rng.seed = self.params.seed
+
+func generation_done(is_editor: bool):
+	if is_editor:
+		self.game_state_changed.emit(GameState.AFTER_GENERATION_EDITOR)
+	else:
+		self.game_state_changed.emit(GameState.AFTER_GENERATION)
+
+func generate_sub_rooms():
+	for section: Section in all_used_sections.values():
+		section.choose_biom_tree_based()
+		section.room.generate_sub_rooms()
 
 func solve_coridors():
 	for node: WorldNode in all_nodes.values():
@@ -47,10 +68,13 @@ func solve_coridors():
 		for connection in node.children:
 			var section_prev = null
 			for section_current in connection.path:
-				all_used_sections[section_current.index] = section_current
-				if section_prev != null:
+				if section_prev != null && !all_used_sections.has(section_current.index):
 					section_current.place_coridor(section_prev)
-					all_coridors.append_array(section_current.coridors)
+					for coridor in section_current.coridors:
+						if !all_coridors.has(coridor):
+							all_coridors.push_back(coridor)
+
+				all_used_sections[section_current.index] = section_current
 				section_prev = section_current
 
 func generate_blockers():
@@ -99,6 +123,7 @@ class Params:
 	var room_min_padding: int													= 2
 	var section_min_contact: int												= 16
 	var gstar_avoidance: float													= 1.0
+	var sub_section_min_size: Vector2i = Vector2i(8, 8)
 
 class NodeGenerationParams:
 	var termination_node: WorldNode
@@ -132,6 +157,14 @@ class NodeConnection:
 		self.path = []
 
 class WorldNode:
+	enum Biom {
+		PEACE,
+		GRAVEYARD,
+		BLOOD_LAKE,
+		TRAP,
+		BOSS,
+	}
+
 	var world: World
 	var name: StringName
 	var children: Array[NodeConnection]
@@ -334,19 +367,12 @@ class BossNode extends WorldNode:
 class CheckPointNode extends WorldNode:
 	pass
 
-enum Biom {
-	PEACE,
-	GRAVEYARD,
-	BLOOD_LAKE,
-	TRAP,
-	BOSS,
-}
-
 class Section:
 	var rect: Rect2i
-	var room: Rect2i
+	var room: Room
 	var global_room: Rect2i
 	var node: WorldNode
+	var nearest_parent_node: WorldNode
 	var world: World
 	var coridors: Array[Coridor] = []
 	var index: int = -1
@@ -356,7 +382,7 @@ class Section:
 		self.rect = rect
 		self.world = world
 		self.assign_node()
-		
+
 	func match_end_criterias() -> bool:
 		return self.rect.size < self.world.params.section_max_size
 
@@ -424,6 +450,12 @@ class Section:
 			segment.bottom_open = true
 			self.coridors.push_back(Coridor.new(from, self, [segment]))
 		
+	# Choose a biom based on the world tree
+	# The biom will be either the current node biom or (if no node is assignated to the current section)
+	# The nearest ancester biom
+	func choose_biom_tree_based():
+		printerr("TREE BASED BIOM UNIMPLEMENTED")
+		pass
 
 	func place_room():
 		var min_padding = world.params.room_min_padding
@@ -438,7 +470,7 @@ class Section:
 		var max_offset = Vector2i(self.rect.size.x - (size.x + min_padding), self.rect.size.y - (size.y + min_padding))
 		var offset = Vector2i(world.rng.randi_range(min_padding, max_offset.x), world.rng.randi_range(min_padding, max_offset.y))
 		
-		self.room = Rect2i(offset, size)
+		self.room = Room.new(self, Rect2i(offset, size))
 		self.global_room = Rect2i(self.rect.position + offset, size)
 
 	func assign_node():
@@ -476,11 +508,154 @@ class Section:
 
 class Room:
 	var rect: Rect2i
+	var section: Section
+	var partitions: Array[Partition]
 	
-	func _init(rect: Rect2i) -> void:
-		self.rect = rect
+	var vertical_overlaping_coridors: Array[Coridor] = []
+	var horizontal_overlaping_coridors: Array[Coridor] = []
+	
+	enum RoomKind {
+		EMPTY,
+		GRAVEYARD_ENTRANCE,
+		GRAVEYARD_CORIDOR,
+		GRAVEYARD_HALL,
+	}
 
-class Coridor:	
+	func _init(section: Section, rect: Rect2i) -> void:
+		self.section = section
+		self.rect = rect
+		self.partitions = [
+			Partition.new(Rect2i(0, 0, rect.size.x, rect.size.y), self)
+		]
+
+	func generate_sub_rooms():
+		# CHOOSE A ROOM KIND
+		
+		# Split the room based on the kind
+		# Generate bonus and blockers
+		
+		if section.node != null && is_instance_of(section.node, SpawnNode):
+			section.world.entities.append(WorldEntity.SpawnEntity.new(section.world, rect.get_center() + section.rect.position))
+		else:
+			bsp()
+
+	# Apply BSP on the room to generate room section
+	# The section are splited in a way that every corridor is always fully contained into his own section
+	func bsp():
+		for coridor: Coridor in self.section.world.all_coridors:
+			for segment: Coridor.CoridorSegment in coridor.path:
+				if section.global_room.position.x <= segment.rect.position.x && section.global_room.end.x >= segment.rect.end.x:
+					if section.global_room.position.y == segment.rect.position.y - 1 || section.global_room.position.y == segment.rect.end.y - 1 || section.global_room.end.y == segment.rect.position.y + 1 || section.global_room.end.y == segment.rect.end.y + 1:
+						vertical_overlaping_coridors.push_back(coridor)
+				if section.global_room.position.y <= segment.rect.position.y && section.global_room.end.y >= segment.rect.end.y:
+					if section.global_room.position.x == segment.rect.position.x - 1 || section.global_room.position.x == segment.rect.end.x - 1 || section.global_room.end.x == segment.rect.position.x + 1 || section.global_room.end.x == segment.rect.end.x + 1:
+						horizontal_overlaping_coridors.push_back(coridor)
+					
+		while true:
+			var addition = 0
+			var new_partitions: Array[Partition] = []
+			for partition: Partition in self.partitions:
+				var is_horizontal = partition.rect.size.y > partition.rect.size.x
+				var offset = partition.find_split_offset(is_horizontal)
+				if offset == -1:
+					new_partitions.push_back(partition)
+				else:
+					addition += 1
+					new_partitions.append_array(partition.split_at(is_horizontal, offset))
+			partitions = new_partitions
+			if addition == 0:
+				break
+		print(partitions.size())
+	
+	class Partition:
+		var rect: Rect2i
+		var room: Room
+
+		func _init(rect: Rect2i, room: Room) -> void:
+			self.rect = rect
+			self.room = room
+			
+		func split_at(is_horizontal: bool, offset: int) -> Array[Partition]:
+			if is_horizontal:
+				return [
+					Partition.new(Rect2i(self.rect.position, Vector2(self.rect.size.x, offset)), self.room),
+					Partition.new(Rect2i(self.rect.position.x, self.rect.position.y + offset, self.rect.size.x, self.rect.size.y - offset), self.room)
+				]
+			else:
+				return [
+					Partition.new(Rect2i(self.rect.position, Vector2(offset, self.rect.size.y)), self.room),
+					Partition.new(Rect2i(self.rect.position.x + offset, self.rect.position.y, self.rect.size.x - offset, self.rect.size.y), self.room)
+				]
+
+		func find_split_offset(horizontal: bool = false) -> int:
+			if horizontal:
+				var from_offset = self.rect.position.y + room.section.world.params.sub_section_min_size.y
+				var to_offset = self.rect.end.y - room.section.world.params.sub_section_min_size.y
+				if from_offset > to_offset || to_offset <= 0:
+					return -1
+				if self.rect.size.y < 2 * room.section.world.params.sub_section_min_size.y:
+					return -1
+				var offset = self.room.section.world.rng.randi_range(from_offset, to_offset)
+				var base_offset = offset
+				var has_overlap = true
+				while has_overlap && offset <= to_offset:
+					has_overlap = false
+					for overlap: Coridor in room.horizontal_overlaping_coridors:
+						var global_offset = self.room.section.global_room.position.y + offset
+						var ovr = overlap.path[0].rect
+						if global_offset >= ovr.position.y && global_offset <= ovr.end.y:
+							has_overlap = true
+					if !has_overlap:
+						return offset - self.rect.position.y
+					offset += 1
+				has_overlap = true
+				offset = base_offset
+				while has_overlap && offset >= from_offset:
+					has_overlap = false
+					for overlap: Coridor in room.horizontal_overlaping_coridors:
+						var global_offset = self.room.section.global_room.position.y + offset
+						var ovr = overlap.path[0].rect
+						if global_offset >= ovr.position.y && global_offset <= ovr.end.y:
+							has_overlap = true
+					if !has_overlap:
+						return offset - self.rect.position.y
+					offset -= 1
+			else:
+				var from_offset = self.rect.position.x + room.section.world.params.sub_section_min_size.x
+				var to_offset = self.rect.end.x - room.section.world.params.sub_section_min_size.x
+				if from_offset > to_offset || to_offset <= 0:
+					return -1
+				if self.rect.size.x < 2 * room.section.world.params.sub_section_min_size.x:
+					return -1
+				var offset = self.room.section.world.rng.randi_range(from_offset, to_offset)
+				var base_offset = offset
+				var has_overlap = true
+				while has_overlap && offset <= to_offset:
+					has_overlap = false
+					for overlap: Coridor in room.vertical_overlaping_coridors:
+						var global_offset = self.room.section.global_room.position.x + offset
+						var ovr = overlap.path[0].rect
+						if global_offset >= ovr.position.x && global_offset <= ovr.end.x:
+							has_overlap = true
+					if !has_overlap:
+						return offset - self.rect.position.x
+					offset += 1
+				has_overlap = true
+				offset = base_offset
+				while has_overlap && offset >= from_offset:
+					has_overlap = false
+					for overlap: Coridor in room.vertical_overlaping_coridors:
+						var global_offset = self.room.section.global_room.position.x + offset
+						var ovr = overlap.path[0].rect
+						if global_offset >= ovr.position.x && global_offset <= ovr.end.x:
+							has_overlap = true
+					if !has_overlap:
+						return offset - self.rect.position.x
+					offset -= 1
+
+			return -1
+
+class Coridor:
 	var blocker_place_holder: Array
 	
 	var from: Section

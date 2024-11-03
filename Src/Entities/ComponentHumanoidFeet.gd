@@ -28,8 +28,8 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	contact_with_ground = has_overlapping_bodies()
-	
-	if !contact_with_ground_signaled:
-		contact_with_ground_updated.emit(contact_with_ground)
-		contact_with_ground_signaled = true
-	pass
+	print(contact_with_ground)
+	#if !contact_with_ground_signaled:
+		#contact_with_ground_updated.emit(contact_with_ground)
+		#contact_with_ground_signaled = true
+	#pass

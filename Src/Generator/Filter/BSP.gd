@@ -1,3 +1,6 @@
+# BSP Partitioning algorythme
+# This implementation is used to generate world's sections grid
+
 class_name BSP extends Node
 
 var world: World
@@ -31,7 +34,6 @@ func step() -> bool:
 
 	var section_added = world.sections.size() - nbr_section_before
 	for node: World.WorldNode in world.all_nodes.values():
-		if node.section == null:
 			print("Node `%s` does not have any section affected" % node.name)
 	
 	return nbr_section_not_match_end_criterias > 0

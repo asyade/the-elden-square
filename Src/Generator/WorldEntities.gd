@@ -1,14 +1,30 @@
 class_name WorldEntity
 
 var position: Vector2i
+var world: World
+
+func _init(world: World, position: Vector2i):
+	self.position = position
+	self.world = world
+
+class SpawnEntity extends WorldEntity:
+	var spawn_script = load("res://Src/Gameplay/Spawn.gd")
+	func _init(world: World, position: Vector2i):
+		self.position = position
+		self.world = world
+		self.world.game_state_changed.connect(_game_state_changed)
+
+	func _game_state_changed(state: World.GameState):
+		if state == World.GameState.AFTER_GENERATION:
+			var spawn_node = Spawn.new()
+			world.host.add_child(spawn_node)
+			spawn_node.position = self.position * 32.0
+			pass
 
 class DoorBlocker extends WorldEntity:
-	
-	
 	var is_horizontal: bool
 	var activator: LeverActivator
 	var coridor: World.Coridor
-	var world: World
 	
 	func _init(world: World, position: Vector2i, is_horizontal: bool) -> void:
 		print("[WorldEntity] Instanciate DoorBlocker: x=%d y=%d" % [position.x, position.y])

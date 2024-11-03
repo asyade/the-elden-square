@@ -8,9 +8,11 @@ enum Steps {
 	ROOMS,
 	ROADS,
 	CORIDORS,
+	SUB_ROOMS,
 	BLOCKERS,
 	RENDERER,
 	PROJECT,
+	GENERATED,
 	ABORTED,
 }
 
@@ -131,6 +133,7 @@ func generate():
 	var used_width = abs((max_x - min_x) + (5 * params.section_max_size.x))
 	var used_height = abs((max_y - min_y) + (5 * params.section_max_size.y))
 	world.root_node.offset_recursive(Vector2i(used_width / 2, used_height - ((2.5*params.section_max_size.y) + 1)))
+	world.host = projection_host
 	world.size = Vector2i(used_width, used_height)
 	world.root_node.debug()
 	world.all_nodes = world.root_node.flatten()
@@ -145,7 +148,8 @@ func _process(delta: float) -> void:
 		if !state_processed:
 			state_processed = true
 			queue_redraw()
-			print("[WG] Idle")
+			if !Engine.is_editor_hint():
+				generate()
 	if state == Steps.INIT:
 		gstar = null
 		bsp = null
@@ -185,7 +189,12 @@ func _process(delta: float) -> void:
 	elif state == Steps.CORIDORS:
 		print("[WG] Solving coridors ...")
 		world.solve_coridors()
-		state = Steps.BLOCKERS
+		state = Steps.SUB_ROOMS
+	elif state == Steps.SUB_ROOMS:
+		print("[WG] Generating sub rooms ...")
+		world.generate_sub_rooms()
+		#state = Steps.BLOCKERS
+		state = Steps.NONE
 	elif state == Steps.BLOCKERS:
 		if !state_processed:
 			state_processed = true
@@ -212,7 +221,12 @@ func _process(delta: float) -> void:
 			else:
 				projection = WorldProjection.new(world, projection_host)
 				projection.project()
-			state = Steps.NONE
+				
+			if Engine.is_editor_hint():
+				state = Steps.NONE
+			else:
+				state = Steps.GENERATED
+			world.generation_done(Engine.is_editor_hint())
 	queue_redraw()
 
 func abort(reason):
@@ -230,21 +244,20 @@ func  _draw() -> void:
 	if draw_section_grid:
 		for section in world.sections:
 			var room = Rect2(scale * section.rect.position, scale * section.rect.size)
-			draw_string(font, Vector2(room.position.x, room.position.y), "%d x %d" % [section.rect.size.x, section.rect.size.y], HORIZONTAL_ALIGNMENT_LEFT , room.size.x,  scale)
+			#draw_string(font, Vector2(room.position.x, room.position.y), "%d x %d" % [section.rect.size.x, section.rect.size.y], HORIZONTAL_ALIGNMENT_LEFT , room.size.x,  scale)
 			draw_rect(room, Color.BLACK, false)
 
 	if gstar != null:
-		for cell_idx in gstar.cells.size():
-			var cell = gstar.cells[cell_idx]
-			var section = cell.section
-			var room = Rect2(scale * (section.room.position + section.rect.position), scale * section.room.size)
-			var color = Color.BLACK
-			
+		for section: World.Section in world.all_used_sections.values():
+			var room = Rect2(scale * (section.room.rect.position + section.rect.position), scale * section.room.rect.size)
+			var color = Color.CORNFLOWER_BLUE
 			if section.node != null:
 				color = section.node.color
-			
-			if cell.path_mask != 0:
-				draw_rect(room, color)
+			draw_rect(room, color)
+			if section.room != null:
+				for sub_room in section.room.partitions:
+					var offseted = Rect2((sub_room.rect.position + section.global_room.position) * scale, sub_room.rect.size * scale) 
+					draw_rect(offseted, Color.RED, false)
 
 	if draw_coridor:
 		for coridor: World.Coridor in world.all_coridors:
@@ -260,13 +273,13 @@ func  _draw() -> void:
 			var cell = gstar.cells[cell_idx]
 			var section = cell.section
 			draw_string(font, section.rect.get_center() * scale, "%d" % cell.path_mask, HORIZONTAL_ALIGNMENT_CENTER, -1, 128)
-
-	if draw_section_spots:
-		for section in world.all_used_sections.values():
-			var room = Rect2((scale * (section.rect.position + section.room.position)), (scale * section.room.size))
-			draw_rect(room, Color.CADET_BLUE if section.node == null else section.node.color)
-			if section.node != null:
-				draw_string(font, Vector2(room.position.x, room.get_center().y), section.node.name, HORIZONTAL_ALIGNMENT_CENTER , room.size.x,  scale)
+#
+	#if draw_section_spots:
+		#for section in world.all_used_sections.values():
+			#var room = Rect2((scale * (section.rect.position + section.room.rect.position)), (scale * section.room.rect.size))
+			#draw_rect(room, Color.CADET_BLUE if section.node == null else section.node.color)
+			#if section.node != null:
+				#draw_string(font, Vector2(room.position.x, room.get_center().y), section.node.name, HORIZONTAL_ALIGNMENT_CENTER , room.size.x,  scale)
 
 	if draw_sub_grid:
 		for x in grid_size.x / grid_sub_size.x:
