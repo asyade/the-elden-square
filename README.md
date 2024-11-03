@@ -1,14 +1,13 @@
-# Dungeon Souls
+# The Elden Sqaure
 
 A procedurally generated top-down souls-like game built with Godot 4.
+
+![Screenshot](docs/main_game.png)
 
 ## Features
 
 ### Procedural World Generation
-- BSP (Binary Space Partitioning) based dungeon generation
-- Dynamic room placement and corridor generation
-- Multiple biome support
-- Seamless world transitions
+Multiple layer tree based world generation with path and alternate paths.
 
 ### Combat System
 - Souls-like combat mechanics
@@ -24,21 +23,3 @@ A procedurally generated top-down souls-like game built with Godot 4.
 - Skeleton enemies with unique attack patterns
 - Inventory system with equipment slots
 
-### Technical Features
-- Custom tilemap system with multiple layers:
-  - Ground layers (Layer 17)
-  - World boundaries (Layer 18)
-  - Physics obstacles (Layer 1)
-- Advanced pathfinding system
-- Dynamic lighting system
-- Controller support with customizable inputs
-- Robust GUI system with:
-  - Health bars
-  - Inventory interface
-  - Equipment slots
-
-### Visual Features
-- Pixel art graphics
-- Dynamic animations
-- Environmental effects
-- Custom shaders and post-processing
